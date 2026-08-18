@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mediterraneo Buffet — Simulador de Evento</title>
+<style>
+:root{--bg:#090909;--card:#121212;--card2:#0d0d0d;--txt:#f5f1e8;--muted:#aaa39a;--gold:#c9a45c;--gold2:#e1c783;--line:#332e26}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+main{max-width:1180px;margin:0 auto;padding:32px 18px 70px}
+header{text-align:center;padding:24px 0 38px}
+.brand{font-family:Georgia,serif;color:var(--gold);letter-spacing:.22em;font-size:12px}
+h1,h2{font-family:Georgia,serif;font-weight:400}
+h1{font-size:44px;line-height:1.08;margin:14px 0 12px}
+.intro{max-width:720px;margin:0 auto;color:var(--muted);font-size:16px;line-height:1.65}
+.intro b{display:block;color:var(--txt);font:22px Georgia,serif;margin-bottom:6px}
+.consultant{margin:20px auto 0;padding-top:14px;border-top:1px solid var(--line);max-width:520px;color:var(--muted);font-size:12px}
+.consultant strong{color:var(--txt)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.card{background:var(--card);border:1px solid var(--line);padding:24px}
+.full{grid-column:1/-1}
+.kicker{color:var(--gold);font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
+h2{font-size:27px;margin:0 0 8px}
+.lead{color:var(--muted);line-height:1.55;margin:0 0 18px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}
+input[type=number],input[type=date],select{width:100%;height:50px;padding:0 14px;font-size:16px!important;color:var(--txt);background:#0a0a0a;border:1px solid #3a352d;border-radius:0!important;-webkit-appearance:none;appearance:none}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--gold) 50%),linear-gradient(135deg,var(--gold) 50%,transparent 50%);background-position:calc(100% - 18px) 22px,calc(100% - 13px) 22px;background-size:5px 5px;background-repeat:no-repeat;padding-right:38px}
+input[type=date]{color-scheme:dark}
+.info-line{margin-top:9px;color:var(--gold2);font-size:13px;line-height:1.45}
+.menu{background:var(--card2);border:1px solid var(--line);padding:20px}
+.menu-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.menu-title{font:24px Georgia,serif}
+.menu-price{color:var(--gold2);font-size:14px;text-align:right}
+.tiers{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 2px}
+.tier{border:1px solid #3a352d;padding:7px 9px;color:var(--muted);font-size:11px}
+.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:17px}
+.menu-item{border-top:1px solid #29251f;padding-top:11px}
+.menu-item b{display:block;font-size:12px;margin-bottom:4px}
+.menu-item span{color:var(--muted);font-size:11px;line-height:1.5}
+.choice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.choice-card{display:block;position:relative;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.choice-card input{position:absolute;opacity:0;width:1px;height:1px}
+.choice-inner{display:flex;flex-direction:column;height:100%;min-height:190px;border:1px solid #383229;background:var(--card2);padding:17px}
+.choice-card input:checked + .choice-inner{border-color:var(--gold);background:#18140f;box-shadow:inset 0 0 0 1px var(--gold)}
+.choice-title{font:19px Georgia,serif;margin-bottom:5px}
+.choice-price{color:var(--gold2);font-size:12px;margin-bottom:10px}
+.choice-desc{color:var(--muted);font-size:11px;line-height:1.5;flex:1}
+.choice-action{display:inline-block;align-self:flex-start;margin-top:12px;border:1px solid #5a4a30;padding:7px 10px;color:var(--gold2);font-size:10px;text-transform:uppercase;letter-spacing:.07em}
+.choice-card input:checked + .choice-inner .choice-action{background:var(--gold);border-color:var(--gold);color:#111}
+.fixed{border:1px solid var(--gold);background:#18140f;padding:18px}
+.fixed-title{font:19px Georgia,serif}
+.fixed-price{color:var(--gold2);font-size:13px;margin:5px 0 9px}
+.fixed-desc{color:var(--muted);font-size:11px;line-height:1.55}
+.summary{background:#101010;border:1px solid var(--line);padding:22px}
+.row{display:flex;justify-content:space-between;gap:18px;padding:10px 0;border-bottom:1px solid #29251f}
+.row span{color:var(--muted)}
+.row strong{text-align:right}
+.total{border-top:1px solid var(--gold);margin-top:18px;padding-top:18px}
+.total small{display:block;color:var(--muted);letter-spacing:.08em}
+.total strong{display:block;color:var(--gold2);font:38px Georgia,serif;margin-top:5px}
+.cta{width:100%;min-height:54px;margin-top:18px;padding:14px;background:var(--gold);border:0;color:#111;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.07em;-webkit-appearance:none;appearance:none;border-radius:0;touch-action:manipulation}
+.note{color:#847e74;font-size:11px;line-height:1.55;margin-top:12px}
+.optional{display:inline-block;color:var(--gold2);border:1px solid #51442e;padding:4px 7px;font-size:9px;letter-spacing:.1em;text-transform:uppercase;margin-left:6px;vertical-align:middle}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.choice-grid,.menu-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){main{padding:24px 13px 55px}.card{padding:19px 15px}h1{font-size:35px}.fields,.choice-grid,.menu-grid{grid-template-columns:1fr}.menu-head{display:block}.menu-price{text-align:left;margin-top:8px}.choice-inner{min-height:0}.row{align-items:flex-start;font-size:13px}.row strong{max-width:62%;word-break:break-word}}
+</style>
+</head>
+<body>
+<noscript><div style="max-width:900px;margin:20px auto;padding:16px;border:1px solid #c9a45c;background:#17140f;color:#f5f1e8;font-family:Arial,sans-serif;line-height:1.5">Este simulador precisa de JavaScript para calcular datas e valores. Se você estiver vendo esta mensagem no iPhone, abra o arquivo em um navegador completo (Safari/Chrome) ou utilize a versão hospedada no site, pois o visualizador de arquivos pode bloquear a interatividade.</div></noscript>
+<main>
+<header>
+ <div class="brand">MEDITERRANEO · BUFFET</div>
+ <h1>Uma experiência personalizada</h1>
+ <p class="intro"><b>Monte seu evento.</b>Escolha os elementos que combinam com sua celebração. Esta é uma simulação inicial; a configuração e o valor final serão confirmados pelo nosso consultor.</p>
+ <div class="consultant">Seu atendimento: <strong>Alessandra Fernandes</strong> · Consultora Mediterraneo</div>
+</header>
+
+<div class="grid">
+<section class="card">
+ <div class="kicker">01 · Seu evento</div>
+ <h2>Comece pela sua celebração</h2>
+ <p class="lead">Informe os dados iniciais. Qualquer alteração atualiza a estimativa imediatamente.</p>
+ <div class="fields">
+  <div class="field"><label for="event">Tipo de evento</label>
+   <select id="event" onchange="recalculate()"><option>Casamento</option><option>Debutante</option><option>Aniversário</option><option>Bodas</option><option>Evento Corporativo</option></select>
+  </div>
+  <div class="field"><label for="guests">Número de convidados</label><input id="guests" type="number" min="1" step="1" value="100" inputmode="numeric" oninput="recalculate()" onchange="recalculate()"></div>
+  <div class="field"><label for="date">Data prevista</label><input id="date" type="date" onchange="recalculate()" oninput="recalculate()"></div>
+  <div class="field"><label>Dia do evento</label><div id="dayLabel" class="info-line">Selecione uma data</div></div>
+ </div>
+</section>
+
+<section class="card">
+ <div class="kicker">02 · Espaço</div>
+ <h2>Escolha onde celebrar</h2>
+ <p class="lead">Locação e sonorização variam conforme o espaço e o dia da semana.</p>
+ <div class="field"><label for="venue">Espaço</label><select id="venue" onchange="recalculate()"><option value="Bistrô Cantareira" data-sat="5000" data-weekday="3000" data-sound="990">Bistrô Cantareira</option>
+<option value="Jardim São Bento" data-sat="6000" data-weekday="5000" data-sound="1190">Jardim São Bento</option>
+<option value="Conceição" data-sat="5000" data-weekday="3000" data-sound="990">Conceição</option>
+<option value="Ataliba Leonel" data-sat="8000" data-weekday="6000" data-sound="1290">Ataliba Leonel</option>
+<option value="Maria Cândida" data-sat="7000" data-weekday="5000" data-sound="1290">Maria Cândida</option>
+<option value="Cantagalo Garden" data-sat="7000" data-weekday="5000" data-sound="1190">Cantagalo Garden</option>
+<option value="Pedreira de Freitas" data-sat="7000" data-weekday="5000" data-sound="1190">Pedreira de Freitas</option>
+<option value="Euclides Pacheco" data-sat="6000" data-weekday="4000" data-sound="1190">Euclides Pacheco</option>
+<option value="Dois de Julho Garden" data-sat="6000" data-weekday="4000" data-sound="1190">Dois de Julho Garden</option>
+<option value="Casa Dois de Julho" data-sat="6000" data-weekday="4000" data-sound="1190">Casa Dois de Julho</option>
+<option value="Costa Aguiar Garden" data-sat="8000" data-weekday="6000" data-sound="1290">Costa Aguiar Garden</option>
+<option value="João Ramalho (Sumaré)" data-sat="6000" data-weekday="4000" data-sound="1190">João Ramalho (Sumaré)</option>
+<option value="Bosque Maia Master" data-sat="7000" data-weekday="5000" data-sound="1190">Bosque Maia Master</option>
+<option value="Casa Maia — Guarulhos" data-sat="5000" data-weekday="3000" data-sound="990">Casa Maia — Guarulhos</option>
+<option value="Conselheiro" data-sat="9000" data-weekday="7000" data-sound="3500">Conselheiro</option></select></div>
+ <div id="venueInfo" class="info-line"></div>
+</section>
+
+<section class="card full">
+ <div class="kicker">03 · Gastronomia</div>
+ <h2>Coquetel</h2>
+ <p class="lead">O Coquetel é o menu padrão e seu valor por pessoa varia automaticamente conforme o número de convidados.</p>
+ <div class="menu">
+  <div class="menu-head"><div><div class="menu-title">Coquetel</div><div style="color:var(--muted);font-size:12px;margin-top:4px">Menu padrão</div></div><div id="coquetelPrice" class="menu-price">R$ 120,00 / pessoa</div></div>
+  <div class="tiers"><span class="tier">50–59 · R$ 180</span><span class="tier">60–69 · R$ 168</span><span class="tier">70–79 · R$ 156</span><span class="tier">80–89 · R$ 144</span><span class="tier">90–99 · R$ 132</span><span class="tier">100+ · R$ 120</span></div>
+  <div class="menu-grid">
+   <div class="menu-item"><b>Couvert</b><span>Pastas de tomate seco, provolone, gorgonzola e azeitonas pretas com grissinis e tarteletes.</span></div>
+   <div class="menu-item"><b>Salgados</b><span>Seleção de salgados incluindo bolinho de bacalhau, coxinha, mini focaccia, mini kibe e outros.</span></div>
+   <div class="menu-item"><b>Doces finos</b><span>Brigadeiros, caramelo salgado, camafeu, brownie, prestígio, trufados e uvas glaçadas.</span></div>
+   <div class="menu-item"><b>Bolo</b><span>Pão de ló com recheio e cobertura à escolha.</span></div>
+   <div class="menu-item"><b>Welcome Drink</b><span>Soda italiana.</span></div>
+   <div class="menu-item"><b>Bebidas e encerramento</b><span>Refrigerantes, água, néctar de frutas, café, chá, petit fours e mousse.</span></div>
+  </div>
+ </div>
+</section>
+
+<section class="card full">
+ <div class="kicker">04 · Lounges adicionais <span class="optional">Opcional</span></div>
+ <h2>Enriqueça sua festa</h2>
+ <p class="lead">Os Lounges são adicionais opcionais. Você pode escolher nenhum, apenas um ou combinar quantos desejar.</p>
+ <div class="choice-grid"><label class="choice-card">
+      <input type="checkbox" class="lounge-check" value="Lounge I" data-price="26" onchange="recalculate();syncChoiceLabels();">
+      <span class="choice-inner">
+        <span class="choice-title">Lounge I</span>
+        <span class="choice-price">R$ 26,00 / pessoa</span>
+        <span class="choice-desc">Entrada fria: Salada Culatelo; rondeli recheado ao molho; sobremesa com sorvete e cobertura de chocolate.</span>
+        <span class="choice-action">Adicionar</span>
+      </span>
+    </label>
+<label class="choice-card">
+      <input type="checkbox" class="lounge-check" value="Lounge II" data-price="30" onchange="recalculate();syncChoiceLabels();">
+      <span class="choice-inner">
+        <span class="choice-title">Lounge II</span>
+        <span class="choice-price">R$ 30,00 / pessoa</span>
+        <span class="choice-desc">Entrada fria: Salada Paolo; lagarto recheado ao molho madeira; batata rústica; arroz com amêndoas; sorvete de nata com cobertura de chocolate e wafer.</span>
+        <span class="choice-action">Adicionar</span>
+      </span>
+    </label>
+<label class="choice-card">
+      <input type="checkbox" class="lounge-check" value="Lounge III" data-price="54" onchange="recalculate();syncChoiceLabels();">
+      <span class="choice-inner">
+        <span class="choice-title">Lounge III</span>
+        <span class="choice-price">R$ 54,00 / pessoa</span>
+        <span class="choice-desc">Ilha de Finger Foods, salpicão de frango, saladinha de folhas e tomate grape, fricassé de frango, bobó de camarão, escondidinho de carne seca, risoto de funghi, dadinho de tapioca, sorvete de frutas vermelhas e mini churros.</span>
+        <span class="choice-action">Adicionar</span>
+      </span>
+    </label>
+<label class="choice-card">
+      <input type="checkbox" class="lounge-check" value="Lounge IV" data-price="96" onchange="recalculate();syncChoiceLabels();">
+      <span class="choice-inner">
+        <span class="choice-title">Lounge IV</span>
+        <span class="choice-price">R$ 96,00 / pessoa</span>
+        <span class="choice-desc">Jantar com entrada fria, filé mignon ao molho, arroz com passas e amêndoas, purê de mandioquinha com chips de bacon e seleção de sobremesas.</span>
+        <span class="choice-action">Adicionar</span>
+      </span>
+    </label>
+<label class="choice-card">
+      <input type="checkbox" class="lounge-check" value="Lounge V" data-price="68" onchange="recalculate();syncChoiceLabels();">
+      <span class="choice-inner">
+        <span class="choice-title">Lounge V</span>
+        <span class="choice-price">R$ 68,00 / pessoa</span>
+        <span class="choice-desc">Ilha do Marquês com frios, queijos, brie aquecido com massa folhada e mel, pães, frutas, caldo de mandioquinha, caponata, pastas especiais, mini canelone e sobremesa.</span>
+        <span class="choice-action">Adicionar</span>
+      </span>
+    </label>
+<label class="choice-card">
+      <input type="checkbox" class="lounge-check" value="Lounge VI" data-price="20" onchange="recalculate();syncChoiceLabels();">
+      <span class="choice-inner">
+        <span class="choice-title">Lounge VI</span>
+        <span class="choice-price">R$ 20,00 / pessoa</span>
+        <span class="choice-desc">Ilha Gourmet com hot-dog, pizza, X-burguer, batata frita, palinetes de frango, mini churros e estação de balas e guloseimas.</span>
+        <span class="choice-action">Adicionar</span>
+      </span>
+    </label></div>
+</section>
+
+<section class="card full">
+ <div class="kicker">05 · Open Bar <span class="optional">Opcional</span></div>
+ <h2>Complete a experiência</h2>
+ <p class="lead">O Open Bar é opcional. Você pode escolher apenas I, apenas II, os dois ou nenhum.</p>
+ <div class="choice-grid">
+  <label class="choice-card"><input type="checkbox" class="bar-check" value="Open Bar I" data-price="45" onchange="recalculate();syncChoiceLabels();"><span class="choice-inner"><span class="choice-title">Open Bar I</span><span class="choice-price">R$ 45,00 / pessoa</span><span class="choice-desc">Cerveja e espumante branco.</span><span class="choice-action">Adicionar</span></span></label>
+  <label class="choice-card"><input type="checkbox" class="bar-check" value="Open Bar II" data-price="85" onchange="recalculate();syncChoiceLabels();"><span class="choice-inner"><span class="choice-title">Open Bar II</span><span class="choice-price">R$ 85,00 / pessoa</span><span class="choice-desc">Cerveja, espumante branco e vinhos branco, rosé e tinto.</span><span class="choice-action">Adicionar</span></span></label>
+ </div>
+</section>
+
+<section class="card">
+ <div class="kicker">06 · Música</div>
+ <h2>DJ Profissional</h2>
+ <div class="fixed"><div class="fixed-title">DJ Profissional</div><div class="fixed-price">R$ 450,00 · fixo</div><div class="fixed-desc">Até 6 horas de evento, repertório personalizado, pedidos musicais, transições profissionais e condução da pista. Este item já faz parte da simulação.</div></div>
+</section>
+
+<section class="card">
+ <div class="kicker">07 · Resumo</div>
+ <h2>Sua experiência</h2>
+ <div class="summary">
+  <div class="row"><span>Evento</span><strong id="sEvent">—</strong></div>
+  <div class="row"><span>Convidados</span><strong id="sGuests">—</strong></div>
+  <div class="row"><span>Data</span><strong id="sDate">—</strong></div>
+  <div class="row"><span>Espaço</span><strong id="sVenue">—</strong></div>
+  <div class="row"><span>Locação</span><strong id="sRent">—</strong></div>
+  <div class="row"><span>Sonorização</span><strong id="sSound">—</strong></div>
+  <div class="row"><span>Coquetel</span><strong id="sFood">—</strong></div>
+  <div class="row"><span>Lounges adicionais</span><strong id="sLounges">Nenhum</strong></div>
+  <div class="row"><span>Open Bar</span><strong id="sBars">Nenhum</strong></div>
+  <div class="row"><span>DJ Profissional</span><strong>R$ 450,00</strong></div>
+  <div class="total"><small>ESTIMATIVA INICIAL</small><strong id="total">R$ 0,00</strong></div>
+  <button class="cta" type="button" onclick="sendSimulation()">Enviar minha simulação a Alessandra</button>
+  <div class="note">Esta é uma simulação inicial. Disponibilidade, condições comerciais, configuração e valor final serão confirmados pela consultora.</div>
+ </div>
+</section>
+</div>
+</main>
+
+<script>
+var CONSULTANT="Alessandra Fernandes";
+var WHATSAPP="5511942454211";
+
+function byId(id){return document.getElementById(id);}
+function money(value){
+ var n=Math.round(Number(value)*100)/100;
+ var parts=n.toFixed(2).split(".");
+ var integer=parts[0];
+ var out="";
+ while(integer.length>3){
+   out="."+integer.slice(-3)+out;
+   integer=integer.slice(0,-3);
+ }
+ out=integer+out;
+ return "R$ "+out+","+parts[1];
+}
+function coquetelUnit(g){
+ g=parseInt(g,10)||1;
+ if(g>=100)return 120;
+ if(g>=90)return 132;
+ if(g>=80)return 144;
+ if(g>=70)return 156;
+ if(g>=60)return 168;
+ return 180;
+}
+function splitDate(v){
+ if(!v)return null;
+ var p=v.split("-");
+ if(p.length!==3)return null;
+ return {y:parseInt(p[0],10),m:parseInt(p[1],10),d:parseInt(p[2],10)};
+}
+function weekday(v){
+ var p=splitDate(v);
+ if(!p)return -1;
+ return new Date(Date.UTC(p.y,p.m-1,p.d,12,0,0)).getUTCDay();
+}
+function dateBR(v){
+ var p=splitDate(v);
+ if(!p)return "A definir";
+ var d=(p.d<10?"0":"")+p.d;
+ var m=(p.m<10?"0":"")+p.m;
+ return d+"/"+m+"/"+p.y;
+}
+function dayLabel(v){
+ var w=weekday(v);
+ if(w<0)return "Selecione uma data";
+ var names=["domingo","segunda-feira","terça-feira","quarta-feira","quinta-feira","sexta-feira","sábado"];
+ return names[w]+" · "+dateBR(v);
+}
+function checked(className){
+ var all=document.getElementsByClassName(className);
+ var arr=[];
+ for(var i=0;i<all.length;i++){if(all[i].checked)arr.push(all[i]);}
+ return arr;
+}
+function syncChoiceLabels(){
+ var cards=document.getElementsByClassName("choice-card");
+ for(var i=0;i<cards.length;i++){
+   var input=cards[i].getElementsByTagName("input")[0];
+   var action=cards[i].getElementsByClassName("choice-action")[0];
+   if(input && action)action.innerHTML=input.checked?"✓ Adicionado":"Adicionar";
+ }
+}
+function recalculate(){
+ try{
+   var eventEl=byId("event");
+   var guestsEl=byId("guests");
+   var dateEl=byId("date");
+   var venueEl=byId("venue");
+
+   var guests=parseInt(guestsEl.value,10);
+   if(!guests || guests<1)guests=1;
+
+   var date=dateEl.value||"";
+   var option=venueEl.options[venueEl.selectedIndex];
+   var w=weekday(date);
+   var isSat=(w===6);
+
+   var rent=parseFloat(isSat?option.getAttribute("data-sat"):option.getAttribute("data-weekday"))||0;
+   var sound=parseFloat(option.getAttribute("data-sound"))||0;
+   var foodUnit=coquetelUnit(guests);
+   var foodTotal=foodUnit*guests;
+
+   var loungeInputs=checked("lounge-check");
+   var loungeTotal=0;
+   var loungeNames=[];
+   for(var i=0;i<loungeInputs.length;i++){
+     loungeTotal+=(parseFloat(loungeInputs[i].getAttribute("data-price"))||0)*guests;
+     loungeNames.push(loungeInputs[i].value);
+   }
+
+   var barInputs=checked("bar-check");
+   var barTotal=0;
+   var barNames=[];
+   for(var j=0;j<barInputs.length;j++){
+     barTotal+=(parseFloat(barInputs[j].getAttribute("data-price"))||0)*guests;
+     barNames.push(barInputs[j].value);
+   }
+
+   var dj=450;
+   var total=rent+sound+foodTotal+loungeTotal+barTotal+dj;
+
+   byId("dayLabel").innerHTML=dayLabel(date);
+   byId("venueInfo").innerHTML="Locação: "+money(rent)+" · Sonorização: "+money(sound)+" · "+(date?(isSat?"sábado":"domingo a sexta"):"valor de referência: domingo a sexta");
+   byId("coquetelPrice").innerHTML=money(foodUnit)+" / pessoa";
+
+   byId("sEvent").innerHTML=eventEl.value;
+   byId("sGuests").innerHTML=String(guests);
+   byId("sDate").innerHTML=dateBR(date);
+   byId("sVenue").innerHTML=option.text;
+   byId("sRent").innerHTML=money(rent);
+   byId("sSound").innerHTML=money(sound);
+   byId("sFood").innerHTML=money(foodUnit)+"/pessoa · "+money(foodTotal);
+   byId("sLounges").innerHTML=loungeNames.length?loungeNames.join(", ")+" · "+money(loungeTotal):"Nenhum";
+   byId("sBars").innerHTML=barNames.length?barNames.join(" + ")+" · "+money(barTotal):"Nenhum";
+   byId("total").innerHTML=money(total);
+
+   return {guests:guests,date:date,venue:option.text,rent:rent,sound:sound,foodUnit:foodUnit,foodTotal:foodTotal,loungeInputs:loungeInputs,loungeTotal:loungeTotal,barInputs:barInputs,barTotal:barTotal,dj:dj,total:total};
+ }catch(err){
+   console.log(err);
+   return null;
+ }
+}
+function sendSimulation(){
+ var c=recalculate();
+ if(!c){alert("Não foi possível calcular a simulação. Revise os campos e tente novamente.");return;}
+
+ var loungeLines="";
+ if(c.loungeInputs.length){
+   for(var i=0;i<c.loungeInputs.length;i++){
+     loungeLines+="• "+c.loungeInputs[i].value+": "+money((parseFloat(c.loungeInputs[i].getAttribute("data-price"))||0)*c.guests)+"\n";
+   }
+ }else loungeLines="• Nenhum lounge adicional\n";
+
+ var barLines="";
+ if(c.barInputs.length){
+   for(var j=0;j<c.barInputs.length;j++){
+     barLines+="• "+c.barInputs[j].value+": "+money((parseFloat(c.barInputs[j].getAttribute("data-price"))||0)*c.guests)+"\n";
+   }
+ }else barLines="• Nenhum Open Bar\n";
+
+ var msg="Olá, "+CONSULTANT+"! Finalizei minha simulação no configurador Mediterraneo.\n\n"+
+ "MINHA CONFIGURAÇÃO\n\n"+
+ "Evento: "+byId("event").value+"\n"+
+ "Data: "+dateBR(c.date)+"\n"+
+ "Convidados: "+c.guests+"\n\n"+
+ "ESPAÇO\n"+c.venue+"\n"+
+ "Locação: "+money(c.rent)+"\n"+
+ "Sonorização: "+money(c.sound)+"\n\n"+
+ "GASTRONOMIA\nCoquetel: "+money(c.foodUnit)+" por pessoa\n"+
+ "Subtotal Coquetel: "+money(c.foodTotal)+"\n\n"+
+ "LOUNGES ADICIONAIS\n"+loungeLines+
+ "Subtotal Lounges: "+money(c.loungeTotal)+"\n\n"+
+ "OPEN BAR\n"+barLines+
+ "Subtotal Open Bar: "+money(c.barTotal)+"\n\n"+
+ "DJ PROFISSIONAL\n"+money(c.dj)+"\n\n"+
+ "ESTIMATIVA INICIAL\n"+money(c.total)+"\n\n"+
+ "Gostaria de conversar sobre essa configuração e validar as condições finais.";
+
+ window.location.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent(msg);
+}
+
+function initSimulator(){
+ syncChoiceLabels();
+ recalculate();
+
+ var ids=["event","guests","date","venue"];
+ for(var i=0;i<ids.length;i++){
+   var el=byId(ids[i]);
+   if(!el)continue;
+   el.addEventListener("change",recalculate,false);
+   el.addEventListener("input",recalculate,false);
+   el.addEventListener("blur",recalculate,false);
+ }
+ var opts=document.querySelectorAll(".lounge-check,.bar-check");
+ for(var j=0;j<opts.length;j++){
+   opts[j].addEventListener("change",function(){syncChoiceLabels();recalculate();},false);
+ }
+
+ // Fallback especialmente útil no Safari/iOS: detecta mudanças mesmo se algum evento nativo não disparar.
+ var lastSignature="";
+ window.setInterval(function(){
+   var loungeState=[];
+   var ls=document.getElementsByClassName("lounge-check");
+   for(var a=0;a<ls.length;a++)loungeState.push(ls[a].checked?"1":"0");
+   var barState=[];
+   var bs=document.getElementsByClassName("bar-check");
+   for(var b=0;b<bs.length;b++)barState.push(bs[b].checked?"1":"0");
+   var sig=(byId("event")?byId("event").value:"")+"|"+(byId("guests")?byId("guests").value:"")+"|"+(byId("date")?byId("date").value:"")+"|"+(byId("venue")?byId("venue").selectedIndex:"")+"|"+loungeState.join("")+"|"+barState.join("");
+   if(sig!==lastSignature){lastSignature=sig;syncChoiceLabels();recalculate();}
+ },250);
+}
+
+if(document.readyState==="loading"){
+ document.addEventListener("DOMContentLoaded",initSimulator,false);
+}else{
+ initSimulator();
+}
+</script>
+</body>
+</html>
