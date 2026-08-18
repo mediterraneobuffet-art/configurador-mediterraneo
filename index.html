@@ -85,7 +85,7 @@ input[type=date]{color-scheme:dark}
  <p class="lead">Informe os dados iniciais. Qualquer alteração atualiza a estimativa imediatamente.</p>
  <div class="fields">
   <div class="field"><label for="event">Tipo de evento</label>
-   <select id="event" onchange="recalculate()"><option>Casamento</option><option>Debutante</option><option>Aniversário</option><option>Bodas</option><option>Evento Corporativo</option></select>
+   <select id="event" onchange="recalculate()"><option>Casamento</option><option>Debutante</option><option>Aniversário</option><option>Aniversário Infantil</option><option>Bodas</option><option>Evento Corporativo</option></select>
   </div>
   <div class="field"><label for="guests">Número de convidados</label><input id="guests" type="number" min="1" step="1" value="100" inputmode="numeric" oninput="recalculate()" onchange="recalculate()"></div>
   <div class="field"><label for="date">Data prevista</label><input id="date" type="date" onchange="recalculate()" oninput="recalculate()"></div>
@@ -97,21 +97,21 @@ input[type=date]{color-scheme:dark}
  <div class="kicker">02 · Espaço</div>
  <h2>Escolha onde celebrar</h2>
  <p class="lead">Locação e sonorização variam conforme o espaço e o dia da semana.</p>
- <div class="field"><label for="venue">Espaço</label><select id="venue" onchange="recalculate()"><option value="Bistrô Cantareira" data-sat="5000" data-weekday="3000" data-sound="990">Bistrô Cantareira</option>
-<option value="Jardim São Bento" data-sat="6000" data-weekday="5000" data-sound="1190">Jardim São Bento</option>
-<option value="Conceição" data-sat="5000" data-weekday="3000" data-sound="990">Conceição</option>
-<option value="Ataliba Leonel" data-sat="8000" data-weekday="6000" data-sound="1290">Ataliba Leonel</option>
-<option value="Maria Cândida" data-sat="7000" data-weekday="5000" data-sound="1290">Maria Cândida</option>
-<option value="Cantagalo Garden" data-sat="7000" data-weekday="5000" data-sound="1190">Cantagalo Garden</option>
-<option value="Pedreira de Freitas" data-sat="7000" data-weekday="5000" data-sound="1190">Pedreira de Freitas</option>
-<option value="Euclides Pacheco" data-sat="6000" data-weekday="4000" data-sound="1190">Euclides Pacheco</option>
-<option value="Dois de Julho Garden" data-sat="6000" data-weekday="4000" data-sound="1190">Dois de Julho Garden</option>
-<option value="Casa Dois de Julho" data-sat="6000" data-weekday="4000" data-sound="1190">Casa Dois de Julho</option>
-<option value="Costa Aguiar Garden" data-sat="8000" data-weekday="6000" data-sound="1290">Costa Aguiar Garden</option>
-<option value="João Ramalho (Sumaré)" data-sat="6000" data-weekday="4000" data-sound="1190">João Ramalho (Sumaré)</option>
-<option value="Bosque Maia Master" data-sat="7000" data-weekday="5000" data-sound="1190">Bosque Maia Master</option>
+ <div class="field"><label for="venue">Espaço</label><select id="venue" onchange="recalculate()"><option value="Bistrô Cantareira" data-sat="5000" data-weekday="3000" data-sound="990">Bistrô Cantareira — Zona Norte</option>
+<option value="Jardim São Bento" data-sat="6000" data-weekday="5000" data-sound="1190">Jardim São Bento — Zona Norte</option>
+<option value="Conceição" data-sat="5000" data-weekday="3000" data-sound="990">Conceição — Zona Norte</option>
+<option value="Ataliba Leonel" data-sat="8000" data-weekday="6000" data-sound="1290">Ataliba Leonel — Zona Norte</option>
+<option value="Maria Cândida" data-sat="7000" data-weekday="5000" data-sound="1290">Maria Cândida — Zona Norte</option>
+<option value="Cantagalo Garden" data-sat="7000" data-weekday="5000" data-sound="1190">Cantagalo Garden (Tatuapé Garden) — Zona Leste</option>
+<option value="Pedreira de Freitas" data-sat="7000" data-weekday="5000" data-sound="1190">Pedreira de Freitas — Zona Leste</option>
+<option value="Euclides Pacheco" data-sat="6000" data-weekday="4000" data-sound="1190">Euclides Pacheco (Casa Euclides Pacheco) — Zona Leste</option>
+<option value="Dois de Julho Garden" data-sat="6000" data-weekday="4000" data-sound="1190">Dois de Julho Garden — Zona Sul</option>
+<option value="Casa Dois de Julho" data-sat="6000" data-weekday="4000" data-sound="1190">Casa Dois de Julho — Zona Sul</option>
+<option value="Costa Aguiar Garden" data-sat="8000" data-weekday="6000" data-sound="1290">Costa Aguiar Garden — Zona Sul</option>
+<option value="João Ramalho (Sumaré)" data-sat="6000" data-weekday="4000" data-sound="1190">João Ramalho (Sumaré) — Zona Oeste</option>
+<option value="Bosque Maia Master" data-sat="7000" data-weekday="5000" data-sound="1190">Bosque Maia Master — Guarulhos</option>
 <option value="Casa Maia — Guarulhos" data-sat="5000" data-weekday="3000" data-sound="990">Casa Maia — Guarulhos</option>
-<option value="Conselheiro" data-sat="9000" data-weekday="7000" data-sound="3500">Conselheiro</option></select></div>
+<option value="Conselheiro" data-sat="9000" data-weekday="7000" data-sound="3500">Conselheiro (Conselheiro Moreira de Barros) — Zona Norte</option></select></div>
  <div id="venueInfo" class="info-line"></div>
 </section>
 
